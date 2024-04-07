@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.1/dist/mindar-image-aframe.prod.js"></script>
+
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.2.0/dist/aframe-extras.min.js"></script>
+
+    <title>ARサンプル｜動画</title>
+</head>
+
+<body>
+    <!-- 確認用 -->
+    <!-- <p id="sample-text"
+        style="position: absolute; z-index: 100000; top: 50%; left: 50%; transform: translate(-50%,-50%);">初期テキスト</p> -->
+
+    <!-- 複数のマーカーを使う場合targets.mind を生成する際にあらかじめ画像をアップロードする -->
+    <a-scene mindar-image="imageTargetSrc: targets.mind; filterMinCF:0.001; filterBeta: 0.1" color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false">
+
+        <a-assets>
+            <!-- 表示する画像のアセット -->
+            <video id="video" src="movie/movie01.mp4" preload="auto" response-type="arraybuffer" crossorigin="anonymous"
+                loop crossorigin webkit-playsinline muted playsinline autoplay>
+            </video>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity id="example-target" mindar-image-target="targetIndex: 0" position="0 0 0">
+            <!-- heightとwidthは動画サイズの縦横比と合わせて設定ください -->
+            <a-video src="#video" position="0 0 0" height="1.6" width="2.88" rotation="0 0 0"
+                scale="0.4 0.4 0.4"></a-video>
+        </a-entity>
+    </a-scene>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const exampleTarget = document.querySelector('#example-target');
+            const video = document.querySelector('#video');
+
+            exampleTarget.addEventListener("targetFound", event => {
+                console.log("target found");
+                video.play();
+                // document.getElementById('sample-text').textContent = '再生';
+            });
+
+            exampleTarget.addEventListener("targetLost", event => {
+                console.log("target lost");
+                video.pause();
+                // document.getElementById('sample-text').textContent = '停止';
+            });
+        });
+    </script>
+</body>
+
+</html>
