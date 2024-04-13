@@ -15,6 +15,33 @@
 </head>
 
 <body>
+
+    <!-- ユーザーの操作によるボタン -->
+    <div id="dialog">
+        <button>動画のミュートを解除する</button>
+    </div>
+
+    <style>
+        /* ダイアログのスタイル */
+        #dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        /* ダイアログ内のボタンのスタイル */
+        #dialog button {
+            padding: 10px 20px;
+            font-size: 20px;
+        }
+    </style>
     <!-- 確認用 -->
     <!-- <p id="sample-text"
         style="position: absolute; z-index: 100000; top: 50%; left: 50%; transform: translate(-50%,-50%);">初期テキスト</p> -->
@@ -38,22 +65,32 @@
                 scale="0.4 0.4 0.4"></a-video>
         </a-entity>
     </a-scene>
-
     <script>
+
         document.addEventListener('DOMContentLoaded', () => {
-            const exampleTarget = document.querySelector('#example-target');
             const video = document.querySelector('#video');
+            let lastTime = 0; // 動画の最後の再生位置を記憶する変数
+            video.pause();
+
+            const exampleTarget = document.querySelector('#example-target');
 
             exampleTarget.addEventListener("targetFound", event => {
                 console.log("target found");
+                video.currentTime = lastTime; // 動画を最後の再生位置から再開
                 video.play();
-                // document.getElementById('sample-text').textContent = '再生';
             });
 
             exampleTarget.addEventListener("targetLost", event => {
                 console.log("target lost");
+                lastTime = video.currentTime; // 動画の現在の再生位置を記憶
                 video.pause();
-                // document.getElementById('sample-text').textContent = '停止';
+            });
+
+            // ダイアログのボタンクリックでミュートを解除
+            const dialog = document.getElementById('dialog');
+            dialog.addEventListener('click', () => {
+                video.muted = false;
+                dialog.style.display = 'none'; // ダイアログを非表示にする
             });
         });
     </script>
